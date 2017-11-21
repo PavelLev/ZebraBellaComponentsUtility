@@ -1,0 +1,14 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
+    <Profiles>
+        <Profile Name="(Default)" />
+    </Profiles>
+    <Settings>
+        <Setting Name="ComponentsFolder" Type="System.String" Scope="Application">
+            <Value Profile="(Default)">./src/Domain/components</Value>
+        </Setting>
+        <Setting Name="AlternativeFileTreeFolder" Type="System.String" Scope="Application">
+            <Value Profile="(Default)">./src/Domain/AlternativeFileTree</Value>
+        </Setting>
+    </Settings>
+</SettingsFile>

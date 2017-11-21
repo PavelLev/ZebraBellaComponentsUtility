@@ -2,20 +2,21 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using ZebraBellaComponentsUtility.Settings;
 
 namespace ZebraBellaComponentsUtility.Utility
 {
     public class PathService : IPathService
     {
-        private readonly Settings _settings;
+        private readonly ComponentRelativePathSettings _componentRelativePathSettings;
         private readonly string _componentsFolderPath;
 
-        public PathService(Settings settings)
+        public PathService(ComponentRelativePathSettings componentRelativePathSettings, ApplicationRelativePathSettings applicationRelativePathSettings, RepositoryRelativePathSettings repositoryRelativePathSettings)
         {
-            _settings = settings;
+            _componentRelativePathSettings = componentRelativePathSettings;
             var currentDirectoryPath = AppDomain.CurrentDomain.BaseDirectory;
 
-            _componentsFolderPath = currentDirectoryPath + settings.ComponentsFolderRelativePath;
+            _componentsFolderPath = currentDirectoryPath + applicationRelativePathSettings.RepositoryRoot + repositoryRelativePathSettings.ComponentsFolder;
 
             if (!_componentsFolderPath.EndsWith("\\"))
             {
@@ -25,22 +26,22 @@ namespace ZebraBellaComponentsUtility.Utility
 
         public string GetExecutableDirectoryPath(string componentName)
         {
-            return _componentsFolderPath + componentName + "\\" + _settings.ExecutableDirectoryRelativePath;
+            return _componentsFolderPath + componentName + "\\" + _componentRelativePathSettings.ExecutableDirectory;
         }
 
         public string GetExecutableFileName()
         {
-            return _settings.ExecutableFileName;
+            return _componentRelativePathSettings.ExecutableFile;
         }
 
         public string GetStorageDirectoryPath(string componentName)
         {
-            return _componentsFolderPath + componentName + "\\" + _settings.StorageDirectoryRelativePath;
+            return _componentsFolderPath + componentName + "\\" + _componentRelativePathSettings.StorageDirectory;
         }
 
         public string GetLogsDirectoryPath(string componentName)
         {
-            return _componentsFolderPath + componentName + "\\" + _settings.LogsDirectoryRelativePath;
+            return _componentsFolderPath + componentName + "\\" + _componentRelativePathSettings.LogsDirectory;
         }
 
         public IEnumerable<string> EnumerateComponents()

@@ -1,7 +1,9 @@
 ﻿using System.Windows;
+using NCode.ReparsePoints;
 using ZebraBellaComponentsUtility.Components;
 using ZebraBellaComponentsUtility.Components.Processes;
 using ZebraBellaComponentsUtility.DryIoc;
+using ZebraBellaComponentsUtility.Settings;
 
 namespace ZebraBellaComponentsUtility.Utility
 {
@@ -18,9 +20,13 @@ namespace ZebraBellaComponentsUtility.Utility
             Container.Register<IComponentsService, ComponentsService>(Reuse.Singleton);
             
             Container.Register<IPathService, PathService>(Reuse.Singleton);
+            Container.UseInstance(ReparsePointFactory.Provider);
             Container.Register<IWinApi, WinApi>();
-
-            Container.UseInstance(Settings.Default);
+            
+            Container.UseInstance(ApplicationRelativePathSettings.Default);
+            Container.UseInstance(ComponentRelativePathSettings.Default);
+            Container.UseInstance(MiscellaneousSettings.Default);
+            Container.UseInstance(RepositoryRelativePathSettings.Default);
 
             Container.Register<TaskbarIconViewModel>(Reuse.Singleton);
         }
