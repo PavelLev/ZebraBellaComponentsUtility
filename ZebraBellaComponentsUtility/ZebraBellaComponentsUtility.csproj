@@ -104,10 +104,8 @@
     <Compile Include="DryIoc\Container.cs" />
     <Compile Include="DryIoc\FastExpressionCompiler.cs" />
     <Compile Include="DryIoc\ImTools.cs" />
-    <Compile Include="MyWindow.xaml.cs">
-      <DependentUpon>MyWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="TaskbarIconViewModel.cs" />
+    <Compile Include="Utility\ConfigurationRegex.cs" />
     <Compile Include="Utility\Ioc.cs" />
     <Compile Include="Utility\IPathService.cs" />
     <Compile Include="Utility\IWinApi.cs" />
@@ -117,10 +115,6 @@
     <Compile Include="Utility\WinApiTypes\ProcessEntry.cs" />
     <Compile Include="Utility\WinApiTypes\SnapshotType.cs" />
     <Compile Include="Utility\WinApiTypes\WindowsMessageType.cs" />
-    <Page Include="MyWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="TaskbarIcon.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -1,33 +1,33 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Windows;
 using NCode.ReparsePoints;
+using ZebraBellaComponentsUtility.ConfigurationSections.UserData.ConfigurationElements;
+using ZebraBellaComponentsUtility.Utility;
 
 namespace ZebraBellaComponentsUtility.Components
 {
     public class AlternativeFileTreeService : IAlternativeFileTreeService
     {
         private readonly IReparsePointProvider _reparsePointProvider;
+        private readonly AlternativeFileTree _alternativeFileTree;
+        private readonly IPathService _pathService;
 
-        public AlternativeFileTreeService(IReparsePointProvider reparsePointProvider)
+        public AlternativeFileTreeService(IReparsePointProvider reparsePointProvider, AlternativeFileTree alternativeFileTree, IPathService pathService)
         {
             _reparsePointProvider = reparsePointProvider;
+            _alternativeFileTree = alternativeFileTree;
+            _pathService = pathService;
         }
 
         public void Create()
         {
-            try
-            {
-                //TODO 
+            var alternativeFileTreeDirectoryPath = _pathService.GetAlternativeFileTreeDirectoryPath();
 
-                //EnsureDirectoryCorrectness();
-            }
-            catch 
-            {
-                
-            }
+            EnsureDirectoryCorrectness(alternativeFileTreeDirectoryPath);
 
-            throw new System.NotImplementedException();
+            CreateInternal(alternativeFileTreeDirectoryPath);
         }
 
         private void EnsureDirectoryCorrectness(string directoryPath)
@@ -72,6 +72,16 @@ namespace ZebraBellaComponentsUtility.Components
                     }
                 }
             }
+        }
+
+        private void CreateInternal(string directoryPath)
+        {
+            foreach (var componentName in _pathService.EnumerateComponents())
+            {
+                var componentDirectory = $"{directoryPath}{componentName}";
+            }
+
+            throw new NotImplementedException();
         }
     }
 }

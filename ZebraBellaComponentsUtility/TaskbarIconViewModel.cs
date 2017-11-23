@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
 using Prism.Commands;
 using ZebraBellaComponentsUtility.Components;
@@ -7,7 +8,7 @@ namespace ZebraBellaComponentsUtility
 {
     public class TaskbarIconViewModel
     {
-        public TaskbarIconViewModel(IComponentsService componentsService)
+        public TaskbarIconViewModel(IComponentsService componentsService, IAlternativeFileTreeService alternativeFileTreeService)
         {
             StartCommand = new DelegateCommand(componentsService.Start);
 
@@ -18,6 +19,18 @@ namespace ZebraBellaComponentsUtility
             ClearStorageCommand = new DelegateCommand(componentsService.ClearStorage);
 
             ClearLogsCommand = new DelegateCommand(componentsService.ClearLogs);
+
+            CreateAlternativeFileTree = new DelegateCommand(() =>
+            {
+                try
+                {
+                    alternativeFileTreeService.Create();
+                }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(new Window(), exception.Message, "Error while creating alternative file tree directory");
+                }
+            });
 
             ExitCommand = new DelegateCommand(() =>
             {
@@ -36,13 +49,8 @@ namespace ZebraBellaComponentsUtility
 
         public DelegateCommand ClearLogsCommand { get; }
 
-        public DelegateCommand ExitCommand { get; }
+        public DelegateCommand CreateAlternativeFileTree { get; }
 
-        public DelegateCommand ExampleCommand { get; } = new DelegateCommand(() =>
-        {
-            var myWindow = new MyWindow();
-            myWindow.ShowDialog();
-            ;
-        });
+        public DelegateCommand ExitCommand { get; }
     }
 }

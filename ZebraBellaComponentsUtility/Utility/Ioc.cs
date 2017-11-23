@@ -1,4 +1,6 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
+using System.Diagnostics;
 using System.Windows;
 using NCode.ReparsePoints;
 using ZebraBellaComponentsUtility.Components;
@@ -19,6 +21,7 @@ namespace ZebraBellaComponentsUtility.Utility
             Container.Register<IProcessShellFactory, ProcessShellFactory>(Reuse.Singleton);
 
 
+            Container.Register<IAlternativeFileTreeService, AlternativeFileTreeService>(Reuse.Singleton);
             Container.Register<IComponentsService, ComponentsService>(Reuse.Singleton);
             
 
@@ -28,8 +31,19 @@ namespace ZebraBellaComponentsUtility.Utility
 
             Container.Register<IWinApi, WinApi>();
 
+            UserData userData;
 
-            var userData = (UserData) ConfigurationManager.GetSection("UserDataGroup/UserData");
+            try
+            {
+                userData = (UserData) ConfigurationManager.GetSection("UserDataGroup/UserData");
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(new Window(), exception.Message, "Invalid configuration");
+
+                Process.GetCurrentProcess().Kill();
+                return;
+            }
 
             Container.UseInstance(userData.AlternativeFileTree);
 

@@ -1,4 +1,5 @@
 using System.Configuration;
+using ZebraBellaComponentsUtility.Utility;
 
 namespace ZebraBellaComponentsUtility.ConfigurationSections.UserData.ConfigurationElements
 {
@@ -11,7 +12,8 @@ namespace ZebraBellaComponentsUtility.ConfigurationSections.UserData.Configurati
             set => this[nameof(Name)] = value;
         }
 
-        [ConfigurationProperty(nameof(RepositoryRelativePath), IsRequired = true)]
+        [ConfigurationProperty(nameof(RepositoryRelativePath), IsRequired = true, DefaultValue = "/")]
+        [RegexStringValidator(ConfigurationRegex.Directory)]
         public string RepositoryRelativePath
         {
             get => (string)this[nameof(RepositoryRelativePath)];
