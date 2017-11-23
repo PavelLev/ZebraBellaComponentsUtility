@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using ZebraBellaComponentsUtility.Components.Processes;
-using ZebraBellaComponentsUtility.Settings;
+using ZebraBellaComponentsUtility.ConfigurationSections.UserData.ConfigurationElements;
 using ZebraBellaComponentsUtility.Utility;
 using ZebraBellaComponentsUtility.Utility.WinApiTypes;
 
@@ -18,17 +18,16 @@ namespace ZebraBellaComponentsUtility.Components
         private readonly IPathService _pathService;
         private readonly IWinApi _winApi;
         private readonly IProcessShellFactory _processShellFactory;
-        private readonly MiscellaneousSettings _miscellaneousSettings;
+        private readonly Miscellaneous _miscellaneous;
         private readonly List<ProcessShell> _componentProcessShells = new List<ProcessShell>();
-        private readonly List<Process> _deadProcesses = new List<Process>();
         private readonly ManualResetEvent _allProcessesExitedResetEvent = new ManualResetEvent(false);
 
-        public ComponentsService(IPathService pathService, IWinApi winApi, IProcessShellFactory processShellFactory, MiscellaneousSettings miscellaneousSettings)
+        public ComponentsService(IPathService pathService, IWinApi winApi, IProcessShellFactory processShellFactory, Miscellaneous miscellaneous)
         {
             _pathService = pathService;
             _winApi = winApi;
             _processShellFactory = processShellFactory;
-            _miscellaneousSettings = miscellaneousSettings;
+            _miscellaneous = miscellaneous;
         }
 
         public void Start()
@@ -88,7 +87,7 @@ namespace ZebraBellaComponentsUtility.Components
                 _winApi.PostMessage(processShell.Process.MainWindowHandle, WindowsMessageType.KeyDown, (int)KeyCode.Enter, 0);
             }
 
-            if (!_allProcessesExitedResetEvent.WaitOne(_miscellaneousSettings.BellaCloseDelay))
+            if (!_allProcessesExitedResetEvent.WaitOne(_miscellaneous.BellaCloseDelay))
             {
                 var result = MessageBox.Show(new Form(), "Do you want to kill processes anyway?", "BellaCloseDelay has been exceeded", MessageBoxButtons.YesNo);
 

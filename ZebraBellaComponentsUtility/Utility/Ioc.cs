@@ -1,9 +1,10 @@
-﻿using System.Windows;
+﻿using System.Configuration;
+using System.Windows;
 using NCode.ReparsePoints;
 using ZebraBellaComponentsUtility.Components;
 using ZebraBellaComponentsUtility.Components.Processes;
+using ZebraBellaComponentsUtility.ConfigurationSections.UserData;
 using ZebraBellaComponentsUtility.DryIoc;
-using ZebraBellaComponentsUtility.Settings;
 
 namespace ZebraBellaComponentsUtility.Utility
 {
@@ -17,16 +18,29 @@ namespace ZebraBellaComponentsUtility.Utility
         {
             Container.Register<IProcessShellFactory, ProcessShellFactory>(Reuse.Singleton);
 
+
             Container.Register<IComponentsService, ComponentsService>(Reuse.Singleton);
             
+
             Container.Register<IPathService, PathService>(Reuse.Singleton);
+
             Container.UseInstance(ReparsePointFactory.Provider);
+
             Container.Register<IWinApi, WinApi>();
-            
-            Container.UseInstance(ApplicationRelativePathSettings.Default);
-            Container.UseInstance(ComponentRelativePathSettings.Default);
-            Container.UseInstance(MiscellaneousSettings.Default);
-            Container.UseInstance(RepositoryRelativePathSettings.Default);
+
+
+            var userData = (UserData) ConfigurationManager.GetSection("UserDataGroup/UserData");
+
+            Container.UseInstance(userData.AlternativeFileTree);
+
+            Container.UseInstance(userData.ApplicationRelativePaths);
+
+            Container.UseInstance(userData.ComponentRelativePaths);
+
+            Container.UseInstance(userData.Miscellaneous);
+
+            Container.UseInstance(userData.RepositoryRelativePaths);
+
 
             Container.Register<TaskbarIconViewModel>(Reuse.Singleton);
         }

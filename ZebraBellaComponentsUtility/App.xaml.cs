@@ -12,7 +12,7 @@ namespace ZebraBellaComponentsUtility
         private void App_OnStartup(object sender, StartupEventArgs e)
         {
             Ioc.SetStaticResources(Resources);
-
+            ;
             _taskbarIcon = (TaskbarIcon)FindResource("TaskbarIcon");
             _taskbarIcon.DataContext = Ioc.Container.Resolve<TaskbarIconViewModel>();
         }
