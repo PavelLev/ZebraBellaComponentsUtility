@@ -29,6 +29,11 @@
                     Header="Clear logs"
                     Command="{Binding ClearLogsCommand}"
                 />
+                <!--<Separator />
+                <MenuItem 
+                    Header="Create alternative file tree"
+                    Command="{Binding CreateAlternativeFileTree}"
+                />-->
                 <Separator />
                 <MenuItem 
                     Header="Exit"

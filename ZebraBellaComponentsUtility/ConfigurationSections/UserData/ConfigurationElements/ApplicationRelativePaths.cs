@@ -5,8 +5,7 @@ namespace ZebraBellaComponentsUtility.ConfigurationSections.UserData.Configurati
 {
     public class ApplicationRelativePaths : ConfigurationElement
     {
-        [ConfigurationProperty(nameof(RepositoryRoot), IsRequired = true, DefaultValue = "/")]
-        [RegexStringValidator(ConfigurationRegex.Directory)]
+        [ConfigurationProperty(nameof(RepositoryRoot), IsRequired = true)]
         public string RepositoryRoot
         {
             get => (string)this[nameof(RepositoryRoot)];

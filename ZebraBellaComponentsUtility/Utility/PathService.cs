@@ -9,25 +9,31 @@ namespace ZebraBellaComponentsUtility.Utility
     public class PathService : IPathService
     {
         private readonly ComponentRelativePaths _componentRelativePaths;
+        private readonly IDirectoryService _directoryService;
         private readonly string _componentsFolderPath;
         private readonly string _alternativeFileTreeDirectoryPath;
         private readonly string _gitIgnoreAlternativeFileTreeDirectoryPath;
+        private readonly string _repositoryAbsolutePath;
+        private readonly string _gitExcludePath;
 
-        public PathService(ComponentRelativePaths componentRelativePaths, ApplicationRelativePaths applicationRelativePaths, RepositoryRelativePaths repositoryRelativePaths)
+        public PathService(ComponentRelativePaths componentRelativePaths, ApplicationRelativePaths applicationRelativePaths, RepositoryRelativePaths repositoryRelativePaths, IDirectoryService directoryService)
         {
             _componentRelativePaths = componentRelativePaths;
-            var currentDirectoryPath = AppDomain.CurrentDomain.BaseDirectory;
+            _directoryService = directoryService;
 
-            _componentsFolderPath = currentDirectoryPath + applicationRelativePaths.RepositoryRoot + repositoryRelativePaths.ComponentsFolder;
+            _repositoryAbsolutePath = Normalize(applicationRelativePaths.RepositoryRoot);
 
-            if (!_componentsFolderPath.EndsWith("\\"))
-            {
-                _componentsFolderPath += "\\";
-            }
+            _componentsFolderPath = Normalize
+                (
+                    _repositoryAbsolutePath, repositoryRelativePaths.ComponentsFolder
+                );
 
 
-            _alternativeFileTreeDirectoryPath = currentDirectoryPath + applicationRelativePaths.RepositoryRoot +
-                                                repositoryRelativePaths.AlternativeFileTreeFolder;
+            _alternativeFileTreeDirectoryPath = Normalize
+                (
+                    _repositoryAbsolutePath,
+                    repositoryRelativePaths.AlternativeFileTreeFolder
+                );
 
             _gitIgnoreAlternativeFileTreeDirectoryPath = repositoryRelativePaths.AlternativeFileTreeFolder;
 
@@ -35,11 +41,20 @@ namespace ZebraBellaComponentsUtility.Utility
             {
                 _gitIgnoreAlternativeFileTreeDirectoryPath = _gitIgnoreAlternativeFileTreeDirectoryPath.Remove(0, 2);
             }
+
+
+            _gitExcludePath = Normalize(_repositoryAbsolutePath, ".git\\info\\exclude");
         }
 
         public string GetExecutableDirectoryPath(string componentName)
         {
-            return _componentsFolderPath + componentName + "\\" + _componentRelativePaths.ExecutableDirectory;
+            var executableDirectoryPath = Normalize
+                (
+                    GetComponentDirectory(componentName),
+                    _componentRelativePaths.ExecutableDirectory
+                );
+
+            return executableDirectoryPath;
         }
 
         public string GetExecutableFileName()
@@ -49,29 +64,41 @@ namespace ZebraBellaComponentsUtility.Utility
 
         public string GetStorageDirectoryPath(string componentName)
         {
-            return _componentsFolderPath + componentName + "\\" + _componentRelativePaths.StorageDirectory;
+            var storageDirectoryPath = Normalize
+                (
+                    GetComponentDirectory(componentName),
+                    _componentRelativePaths.StorageDirectory
+                );
+
+            return storageDirectoryPath;
         }
 
         public string GetLogsDirectoryPath(string componentName)
         {
-            return _componentsFolderPath + componentName + "\\" + _componentRelativePaths.LogsDirectory;
+            var logsDirectoryPath = Normalize
+                (
+                    GetComponentDirectory(componentName),
+                    _componentRelativePaths.LogsDirectory
+                );
+
+            return logsDirectoryPath;
         }
 
         public IEnumerable<string> EnumerateComponents()
         {
-            return Directory.EnumerateDirectories(_componentsFolderPath).Select(componentDirectoryPath =>
-            {
-                var startIndex = componentDirectoryPath.LastIndexOf('\\', componentDirectoryPath.Length - 2) + 1;
-
-                var length = componentDirectoryPath.Length - startIndex;
-
-                return componentDirectoryPath.Substring(startIndex, length);
-            });
+            return _directoryService.EnumerateDirectories(_componentsFolderPath)
+                .Select(GetDirectoryName);
         }
 
         public string GetComponentDirectory(string componentName)
         {
-            return _componentsFolderPath + componentName + "\\";
+            var componentDirectory = Normalize
+                (
+                    _componentsFolderPath, 
+                    componentName
+                );
+
+            return componentDirectory;
         }
 
         public string GetAlternativeFileTreeDirectoryPath()
@@ -79,9 +106,63 @@ namespace ZebraBellaComponentsUtility.Utility
             return _alternativeFileTreeDirectoryPath;
         }
 
-        public string GetGitIgnoreAlternativeFileTreeDirectoryPath()
+        public string GetGitExcludeAlternativeFileTreeLine()
         {
             return _gitIgnoreAlternativeFileTreeDirectoryPath;
+        }
+
+        public string GetGitExcludePath()
+        {
+            return _gitExcludePath;
+        }
+
+        public string GetChildDirectoryPath(string parentDirectoryPath, string childDirectoryName)
+        {
+            if (!parentDirectoryPath.EndsWith("\\"))
+            {
+                parentDirectoryPath += "\\";
+            }
+
+            var childDirectoryPath = Normalize
+                (
+                    parentDirectoryPath, 
+                    childDirectoryName
+                );
+
+            return childDirectoryPath;
+        }
+
+        public string GetDirectoryName(string path)
+        {
+            path = Normalize(path);
+
+            var startIndex = path.LastIndexOf('\\', path.Length - 2) + 1;
+
+            var length = path.Length - startIndex;
+
+            var directoryName = path.Substring(startIndex, length);
+
+            return directoryName;
+        }
+
+        public string Normalize(string value)
+        {
+            return value.Replace("/", "\\");
+        }
+
+        public string Normalize(params string[] values)
+        {
+            return Path.GetFullPath
+                (
+                    Path.Combine(values)
+                );
+        }
+
+        public string GetRepositoryAbsolutePath(string repositoryRelativePath)
+        {
+            var absolutePath = _repositoryAbsolutePath + repositoryRelativePath;
+
+            return absolutePath;
         }
     }
 }

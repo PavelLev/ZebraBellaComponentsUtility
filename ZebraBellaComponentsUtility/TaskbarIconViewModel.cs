@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using System.Windows;
 using Prism.Commands;
 using ZebraBellaComponentsUtility.Components;
@@ -28,7 +27,7 @@ namespace ZebraBellaComponentsUtility
                 }
                 catch (Exception exception)
                 {
-                    MessageBox.Show(new Window(), exception.Message, "Error while creating alternative file tree directory");
+                    System.Windows.Forms.MessageBox.Show(new System.Windows.Forms.Form(), exception.Message, "Error while creating alternative file tree directory");
                 }
             });
 

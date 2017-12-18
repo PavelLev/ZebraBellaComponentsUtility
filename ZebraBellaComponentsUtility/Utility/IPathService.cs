@@ -12,6 +12,14 @@ namespace ZebraBellaComponentsUtility.Utility
 
         string GetComponentDirectory(string componentName);
         string GetAlternativeFileTreeDirectoryPath();
-        string GetGitIgnoreAlternativeFileTreeDirectoryPath();
+        string GetGitExcludeAlternativeFileTreeLine();
+        string GetGitExcludePath();
+
+        string GetChildDirectoryPath(string parentDirectoryPath, string childDirectoryName);
+        string GetDirectoryName(string path);
+
+        string Normalize(string path);
+
+        string GetRepositoryAbsolutePath(string repositoryRelativePath);
     }
 }

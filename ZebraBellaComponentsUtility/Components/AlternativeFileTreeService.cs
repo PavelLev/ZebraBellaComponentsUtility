@@ -13,75 +13,156 @@ namespace ZebraBellaComponentsUtility.Components
         private readonly IReparsePointProvider _reparsePointProvider;
         private readonly AlternativeFileTree _alternativeFileTree;
         private readonly IPathService _pathService;
+        private readonly IDirectoryService _directoryService;
+        private readonly IPathEqualityComparer _pathEqualityComparer;
+        private readonly IFileService _fileService;
 
-        public AlternativeFileTreeService(IReparsePointProvider reparsePointProvider, AlternativeFileTree alternativeFileTree, IPathService pathService)
+        public AlternativeFileTreeService
+        (
+            IReparsePointProvider reparsePointProvider,
+            AlternativeFileTree alternativeFileTree, 
+            IPathService pathService,
+            IDirectoryService directoryService,
+            IPathEqualityComparer pathEqualityComparer,
+            IFileService fileService
+        )
         {
             _reparsePointProvider = reparsePointProvider;
             _alternativeFileTree = alternativeFileTree;
             _pathService = pathService;
+            _directoryService = directoryService;
+            _pathEqualityComparer = pathEqualityComparer;
+            _fileService = fileService;
         }
 
         public void Create()
         {
             var alternativeFileTreeDirectoryPath = _pathService.GetAlternativeFileTreeDirectoryPath();
 
-            EnsureDirectoryCorrectness(alternativeFileTreeDirectoryPath);
-
-            CreateInternal(alternativeFileTreeDirectoryPath);
-        }
-
-        private void EnsureDirectoryCorrectness(string directoryPath)
-        {
-            if (!Directory.Exists(directoryPath))
+            if (!_directoryService.Exists(alternativeFileTreeDirectoryPath))
             {
-                return;
+                _directoryService.CreateDirectory(alternativeFileTreeDirectoryPath);
             }
 
-            var files = Directory.EnumerateFiles(directoryPath).ToList();
+            var files = _directoryService.EnumerateFiles(alternativeFileTreeDirectoryPath).ToList();
 
             if (files.Count > 0)
             {
                 throw new ArgumentException("There are files in alternative file tree directory");
             }
 
-            var componentDirectories = Directory.EnumerateDirectories(directoryPath).ToList();
+            var presentComponentPaths = _directoryService.EnumerateDirectories(alternativeFileTreeDirectoryPath).ToList();
 
-            if (componentDirectories.Count == 0)
+            var requiredComponents = _pathService.EnumerateComponents()
+                .Select(componentName => 
+                    (
+                        Name: componentName, 
+                        AlternativeFileTreeDirectoryPath: _pathService.GetChildDirectoryPath(alternativeFileTreeDirectoryPath, componentName)
+                    )
+                )
+                .ToList();
+
+            var excessComponentPaths = presentComponentPaths.Except
+                (
+                    requiredComponents.Select
+                    (
+                        component =>
+                            _pathService.GetChildDirectoryPath
+                            (
+                                alternativeFileTreeDirectoryPath, 
+                                component.AlternativeFileTreeDirectoryPath
+                            )
+                    ),
+                    _pathEqualityComparer
+                );
+
+            foreach (var excessComponentPath in excessComponentPaths)
             {
-                return;
+                _directoryService.Delete(excessComponentPath, true);
             }
 
-            foreach (var componentDirectory in componentDirectories)
+
+            foreach (var component in requiredComponents)
             {
-                files = Directory.EnumerateFiles(componentDirectory).ToList();
+                CreateComponentAlternativeFileTreeDirectory(component);
+            }
 
-                if (files.Count > 0)
-                {
-                    throw new ArgumentException($"There are files in {componentDirectory}");
-                }
 
-                var directoryJunctions = Directory.EnumerateDirectories(componentDirectory);
+            var gitExcludePath = _pathService.GetGitExcludePath();
 
-                foreach (var directoryJunction in directoryJunctions)
-                {
-                    var reparseLinkType = _reparsePointProvider.GetLinkType(directoryJunction);
+            var excludeAlternativeFileTreeLine = _pathService.GetGitExcludeAlternativeFileTreeLine();
 
-                    if (reparseLinkType != LinkType.Junction)
-                    {
-                        throw new ArgumentException($"Directory {directoryJunction} is not a junction");
-                    }
-                }
+            var allExcludeLines = _fileService.ReadLines(gitExcludePath);
+
+            if (!allExcludeLines.Any(excludeLine =>
+                _pathEqualityComparer.Equals(excludeLine, excludeAlternativeFileTreeLine)))
+            {
+                _fileService.AppendAllLines(gitExcludePath, new[] {excludeAlternativeFileTreeLine});
             }
         }
 
-        private void CreateInternal(string directoryPath)
+        private void CreateComponentAlternativeFileTreeDirectory((string Name, string AlternativeFileTreeDirectoryPath) component)
         {
-            foreach (var componentName in _pathService.EnumerateComponents())
+            if (!_directoryService.Exists(component.AlternativeFileTreeDirectoryPath))
             {
-                var componentDirectory = $"{directoryPath}{componentName}";
+                _directoryService.CreateDirectory(component.AlternativeFileTreeDirectoryPath);
             }
 
-            throw new NotImplementedException();
+
+            var requiredJunctions = _alternativeFileTree.DirectoryJunctions.Cast<DirectoryJunction>().ToList();
+
+
+            var presentJunctions = _directoryService.EnumerateDirectories(component.AlternativeFileTreeDirectoryPath)
+                .ToList();
+
+            var excessJunctions = presentJunctions.Except(presentJunctions).ToList();
+
+            if (excessJunctions.Count > 0)
+            {
+                throw new InvalidOperationException($"Alternative file tree directory of component contains excess directory {excessJunctions.First()}");
+            }
+
+
+            foreach (var requiredJunction in requiredJunctions)
+            {
+                var requiredJunctionPath = _pathService.GetChildDirectoryPath
+                    (
+                        component.AlternativeFileTreeDirectoryPath,
+                        requiredJunction.Name
+                    );
+
+                var requiredJunctionTarget = string.Format
+                    (
+                        _pathService.GetRepositoryAbsolutePath
+                        (
+                            requiredJunction.RepositoryRelativePath
+                        ),
+                        component.Name
+                    );
+
+
+                if (_directoryService.Exists(requiredJunctionPath))
+                {
+                    var reparseLink = _reparsePointProvider.GetLink(requiredJunctionPath);
+
+                    if (reparseLink.Type != LinkType.Junction)
+                    {
+                        throw new InvalidOperationException($"Alternative file tree directory of component contains non junction directory {excessJunctions.First()}");
+                    }
+
+
+                    if (_pathEqualityComparer.Equals(reparseLink.Target, requiredJunctionTarget))
+                    {
+                        continue;
+                    }
+
+
+                    _directoryService.Delete(requiredJunctionPath);
+                }
+
+
+                _reparsePointProvider.CreateLink(requiredJunctionPath, requiredJunctionTarget, LinkType.Junction);
+            }
         }
     }
 }

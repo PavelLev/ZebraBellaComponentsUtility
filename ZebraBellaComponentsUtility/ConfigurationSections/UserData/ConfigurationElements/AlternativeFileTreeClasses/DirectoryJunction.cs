@@ -12,8 +12,7 @@ namespace ZebraBellaComponentsUtility.ConfigurationSections.UserData.Configurati
             set => this[nameof(Name)] = value;
         }
 
-        [ConfigurationProperty(nameof(RepositoryRelativePath), IsRequired = true, DefaultValue = "/")]
-        [RegexStringValidator(ConfigurationRegex.Directory)]
+        [ConfigurationProperty(nameof(RepositoryRelativePath), IsRequired = true)]
         public string RepositoryRelativePath
         {
             get => (string)this[nameof(RepositoryRelativePath)];

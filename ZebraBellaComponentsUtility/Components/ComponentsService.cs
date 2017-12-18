@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using ZebraBellaComponentsUtility.Components.Processes;
 using ZebraBellaComponentsUtility.ConfigurationSections.UserData.ConfigurationElements;
 using ZebraBellaComponentsUtility.Utility;
+using ZebraBellaComponentsUtility.Utility.CustomMessageBoxes;
 using ZebraBellaComponentsUtility.Utility.WinApiTypes;
 
 namespace ZebraBellaComponentsUtility.Components
@@ -19,15 +20,30 @@ namespace ZebraBellaComponentsUtility.Components
         private readonly IWinApi _winApi;
         private readonly IProcessShellFactory _processShellFactory;
         private readonly Miscellaneous _miscellaneous;
+        private readonly IDirectoryService _directoryService;
+        private readonly IFileService _fileService;
+        private readonly ICustomMessageBoxService _customMessageBoxService;
         private readonly List<ProcessShell> _componentProcessShells = new List<ProcessShell>();
         private readonly ManualResetEvent _allProcessesExitedResetEvent = new ManualResetEvent(false);
 
-        public ComponentsService(IPathService pathService, IWinApi winApi, IProcessShellFactory processShellFactory, Miscellaneous miscellaneous)
+        public ComponentsService
+        (
+            IPathService pathService, 
+            IWinApi winApi, 
+            IProcessShellFactory processShellFactory, 
+            Miscellaneous miscellaneous, 
+            IDirectoryService directoryService, 
+            IFileService fileService,
+            ICustomMessageBoxService customMessageBoxService
+        )
         {
             _pathService = pathService;
             _winApi = winApi;
             _processShellFactory = processShellFactory;
             _miscellaneous = miscellaneous;
+            _directoryService = directoryService;
+            _fileService = fileService;
+            _customMessageBoxService = customMessageBoxService;
         }
 
         public void Start()
@@ -52,6 +68,13 @@ namespace ZebraBellaComponentsUtility.Components
                         {
                             lock (_componentProcessShells)
                             {
+                                if (componentProcessShell.Process.ExitCode != 0)
+                                {
+                                    var content = $"{componentProcessShell.ComponentName} has exited unexpectedly";
+                                    var caption = "Alarm";
+                                    _customMessageBoxService.Info(content, caption);
+                                }
+
                                 _componentProcessShells.Remove(componentProcessShell);
 
                                 if (!_componentProcessShells.Any())
@@ -169,16 +192,16 @@ namespace ZebraBellaComponentsUtility.Components
             ClearDirectories(storageDirectoryPaths, true);
         }
 
-        private static void ClearDirectories(IEnumerable<string> directoryPaths, bool ignoreDeletionFail = false)
+        private void ClearDirectories(IEnumerable<string> directoryPaths, bool ignoreDeletionFail = false)
         {
             foreach (var directoryPath in directoryPaths)
             {
-                if (!Directory.Exists(directoryPath))
+                if (!_directoryService.Exists(directoryPath))
                 {
                     continue;
                 }
 
-                var files = Directory.EnumerateFiles(directoryPath);
+                var files = _directoryService.EnumerateFiles(directoryPath);
 
                 var failedFiles = new List<string>();
 
@@ -186,7 +209,7 @@ namespace ZebraBellaComponentsUtility.Components
                 {
                     try
                     {
-                        File.Delete(file);
+                        _fileService.Delete(file);
                     }
                     catch (Exception exception)
                     {

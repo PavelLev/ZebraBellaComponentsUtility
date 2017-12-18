@@ -7,6 +7,7 @@ using ZebraBellaComponentsUtility.Components;
 using ZebraBellaComponentsUtility.Components.Processes;
 using ZebraBellaComponentsUtility.ConfigurationSections.UserData;
 using ZebraBellaComponentsUtility.DryIoc;
+using ZebraBellaComponentsUtility.Utility.CustomMessageBoxes;
 
 namespace ZebraBellaComponentsUtility.Utility
 {
@@ -22,20 +23,30 @@ namespace ZebraBellaComponentsUtility.Utility
 
 
             Container.Register<IAlternativeFileTreeService, AlternativeFileTreeService>(Reuse.Singleton);
+
             Container.Register<IComponentsService, ComponentsService>(Reuse.Singleton);
             
 
+            Container.Register<ICustomMessageBoxService, CustomMessageBoxService>(Reuse.Singleton);
+
+            Container.Register<IDirectoryService, DirectoryService>(Reuse.Singleton);
+
+            Container.Register<IFileService, FileService>(Reuse.Singleton);
+
             Container.Register<IPathService, PathService>(Reuse.Singleton);
+
+            Container.Register<IPathEqualityComparer, PathEqualityComparer>(Reuse.Singleton);
 
             Container.UseInstance(ReparsePointFactory.Provider);
 
-            Container.Register<IWinApi, WinApi>();
+            Container.Register<IWinApi, WinApi>(Reuse.Singleton);
+
 
             UserData userData;
 
             try
             {
-                userData = (UserData) ConfigurationManager.GetSection("UserDataGroup/UserData");
+                userData = (UserData) ConfigurationManager.GetSection("UserData");
             }
             catch (Exception exception)
             {
