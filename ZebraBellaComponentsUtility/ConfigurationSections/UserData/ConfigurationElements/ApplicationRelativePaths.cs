@@ -5,11 +5,11 @@ namespace ZebraBellaComponentsUtility.ConfigurationSections.UserData.Configurati
 {
     public class ApplicationRelativePaths : ConfigurationElement
     {
-        [ConfigurationProperty(nameof(RepositoryRoot), IsRequired = true)]
-        public string RepositoryRoot
+        [ConfigurationProperty(nameof(DomainRoot), IsRequired = true)]
+        public string DomainRoot
         {
-            get => (string)this[nameof(RepositoryRoot)];
-            set => this[nameof(RepositoryRoot)] = value;
+            get => (string)this[nameof(DomainRoot)];
+            set => this[nameof(DomainRoot)] = value;
         }
     }
 }

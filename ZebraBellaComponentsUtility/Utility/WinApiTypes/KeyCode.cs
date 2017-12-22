@@ -2,6 +2,7 @@
 {
     public enum KeyCode
     {
-        Enter = 0x0d
+        Enter = 0x0d,
+        DownArrow = 0x28
     }
 }

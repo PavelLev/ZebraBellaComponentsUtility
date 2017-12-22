@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
+using ZebraBellaComponentsUtility.Components.Alarms;
 using ZebraBellaComponentsUtility.Components.Processes;
 using ZebraBellaComponentsUtility.ConfigurationSections.UserData.ConfigurationElements;
 using ZebraBellaComponentsUtility.Utility;
@@ -22,9 +23,11 @@ namespace ZebraBellaComponentsUtility.Components
         private readonly Miscellaneous _miscellaneous;
         private readonly IDirectoryService _directoryService;
         private readonly IFileService _fileService;
-        private readonly ICustomMessageBoxService _customMessageBoxService;
+        private readonly IUnexpectedStopAlarmService _unexpectedStopAlarmService;
         private readonly List<ProcessShell> _componentProcessShells = new List<ProcessShell>();
         private readonly ManualResetEvent _allProcessesExitedResetEvent = new ManualResetEvent(false);
+
+        private readonly object _syncRoot = new object();
 
         public ComponentsService
         (
@@ -34,7 +37,7 @@ namespace ZebraBellaComponentsUtility.Components
             Miscellaneous miscellaneous, 
             IDirectoryService directoryService, 
             IFileService fileService,
-            ICustomMessageBoxService customMessageBoxService
+            IUnexpectedStopAlarmService unexpectedStopAlarmService
         )
         {
             _pathService = pathService;
@@ -43,12 +46,12 @@ namespace ZebraBellaComponentsUtility.Components
             _miscellaneous = miscellaneous;
             _directoryService = directoryService;
             _fileService = fileService;
-            _customMessageBoxService = customMessageBoxService;
+            _unexpectedStopAlarmService = unexpectedStopAlarmService;
         }
 
         public void Start()
         {
-            lock (_componentProcessShells)
+            lock (_syncRoot)
             {
                 _allProcessesExitedResetEvent.Reset();
 
@@ -66,13 +69,11 @@ namespace ZebraBellaComponentsUtility.Components
                         componentProcessShell.Process.EnableRaisingEvents = true;
                         componentProcessShell.Process.Exited += (sender, args) =>
                         {
-                            lock (_componentProcessShells)
+                            lock (_syncRoot)
                             {
-                                if (componentProcessShell.Process.ExitCode != 0)
+                                if (componentProcessShell.Process.ExitCode != 0 && !componentProcessShell.ShouldDie)
                                 {
-                                    var content = $"{componentProcessShell.ComponentName} has exited unexpectedly";
-                                    var caption = "Alarm";
-                                    _customMessageBoxService.Info(content, caption);
+                                    _unexpectedStopAlarmService.Alarm(componentProcessShell.ComponentName);
                                 }
 
                                 _componentProcessShells.Remove(componentProcessShell);
@@ -100,14 +101,19 @@ namespace ZebraBellaComponentsUtility.Components
 
         public void Stop()
         {
-            if (!_componentProcessShells.Any())
+            lock (_syncRoot)
             {
-                return;
-            }
+                if (!_componentProcessShells.Any())
+                {
+                    return;
+                }
 
-            foreach (var processShell in _componentProcessShells.ToArray())
-            {
-                _winApi.PostMessage(processShell.Process.MainWindowHandle, WindowsMessageType.KeyDown, (int)KeyCode.Enter, 0);
+                foreach (var processShell in _componentProcessShells.ToArray())
+                {
+                    _winApi.PostMessage(processShell.Process.MainWindowHandle, WindowsMessageType.KeyDown, (int)KeyCode.DownArrow, 0);
+
+                    _winApi.PostMessage(processShell.Process.MainWindowHandle, WindowsMessageType.KeyDown, (int)KeyCode.Enter, 0);
+                }
             }
 
             if (!_allProcessesExitedResetEvent.WaitOne(_miscellaneous.BellaCloseDelay))
@@ -123,26 +129,16 @@ namespace ZebraBellaComponentsUtility.Components
 
         private void KillPowerShellProcesses()
         {
-            lock (_componentProcessShells)
+            lock (_syncRoot)
             {
-                KillProcesses(_componentProcessShells.Select(processShell => processShell.Process));
+                foreach (var componentProcessShell in _componentProcessShells)
+                {
+                    componentProcessShell.ShouldDie = true;
+
+                    componentProcessShell.Process.CloseMainWindow();
+                }
 
                 _componentProcessShells.Clear();
-            }
-        }
-
-        private void KillProcesses(IEnumerable<Process> processes)
-        {
-            foreach (var process in processes)
-            {
-                try
-                {
-                    process.Kill();
-                }
-                catch
-                {
-                    //Ignore
-                }
             }
         }
 

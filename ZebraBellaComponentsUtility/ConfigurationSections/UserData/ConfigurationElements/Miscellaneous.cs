@@ -10,5 +10,12 @@ namespace ZebraBellaComponentsUtility.ConfigurationSections.UserData.Configurati
             get => (int)this[nameof(BellaCloseDelay)];
             set => this[nameof(BellaCloseDelay)] = value;
         }
+
+        [ConfigurationProperty(nameof(AlarmDelay), IsRequired = true)]
+        public int AlarmDelay
+        {
+            get => (int)this[nameof(AlarmDelay)];
+            set => this[nameof(AlarmDelay)] = value;
+        }
     }
 }

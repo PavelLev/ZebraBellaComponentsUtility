@@ -13,5 +13,7 @@ namespace ZebraBellaComponentsUtility.Components.Processes
         public string ComponentName { get; }
 
         public Process Process { get; }
+
+        public bool ShouldDie { get; set; } = false;
     }
 }

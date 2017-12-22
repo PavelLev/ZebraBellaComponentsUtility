@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Windows;
 using NCode.ReparsePoints;
 using ZebraBellaComponentsUtility.Components;
+using ZebraBellaComponentsUtility.Components.Alarms;
 using ZebraBellaComponentsUtility.Components.Processes;
 using ZebraBellaComponentsUtility.ConfigurationSections.UserData;
 using ZebraBellaComponentsUtility.DryIoc;
@@ -19,6 +20,8 @@ namespace ZebraBellaComponentsUtility.Utility
         }
         public static void RegisterAllDependencies()
         {
+            Container.Register<IUnexpectedStopAlarmService, UnexpectedStopAlarmService>(Reuse.Singleton);
+
             Container.Register<IProcessShellFactory, ProcessShellFactory>(Reuse.Singleton);
 
 

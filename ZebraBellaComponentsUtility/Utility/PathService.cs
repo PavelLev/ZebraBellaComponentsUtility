@@ -13,7 +13,7 @@ namespace ZebraBellaComponentsUtility.Utility
         private readonly string _componentsFolderPath;
         private readonly string _alternativeFileTreeDirectoryPath;
         private readonly string _gitIgnoreAlternativeFileTreeDirectoryPath;
-        private readonly string _repositoryAbsolutePath;
+        private readonly string _domainAbsolutePath;
         private readonly string _gitExcludePath;
 
         public PathService(ComponentRelativePaths componentRelativePaths, ApplicationRelativePaths applicationRelativePaths, RepositoryRelativePaths repositoryRelativePaths, IDirectoryService directoryService)
@@ -21,17 +21,18 @@ namespace ZebraBellaComponentsUtility.Utility
             _componentRelativePaths = componentRelativePaths;
             _directoryService = directoryService;
 
-            _repositoryAbsolutePath = Normalize(applicationRelativePaths.RepositoryRoot);
+            _domainAbsolutePath = Normalize(applicationRelativePaths.DomainRoot);
 
             _componentsFolderPath = Normalize
                 (
-                    _repositoryAbsolutePath, repositoryRelativePaths.ComponentsFolder
+                    _domainAbsolutePath, 
+                    repositoryRelativePaths.ComponentsFolder
                 );
 
 
             _alternativeFileTreeDirectoryPath = Normalize
                 (
-                    _repositoryAbsolutePath,
+                    _domainAbsolutePath,
                     repositoryRelativePaths.AlternativeFileTreeFolder
                 );
 
@@ -43,7 +44,7 @@ namespace ZebraBellaComponentsUtility.Utility
             }
 
 
-            _gitExcludePath = Normalize(_repositoryAbsolutePath, ".git\\info\\exclude");
+            _gitExcludePath = Normalize(_domainAbsolutePath, ".git\\info\\exclude");
         }
 
         public string GetExecutableDirectoryPath(string componentName)
@@ -160,7 +161,7 @@ namespace ZebraBellaComponentsUtility.Utility
 
         public string GetRepositoryAbsolutePath(string repositoryRelativePath)
         {
-            var absolutePath = _repositoryAbsolutePath + repositoryRelativePath;
+            var absolutePath = _domainAbsolutePath + repositoryRelativePath;
 
             return absolutePath;
         }

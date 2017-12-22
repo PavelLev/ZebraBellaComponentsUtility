@@ -9,6 +9,7 @@
     SizeToContent="WidthAndHeight"
     Topmost="True"
     WindowStartupLocation="CenterScreen"
+    ResizeMode="NoResize"
 >
     <Grid>
         <Grid.RowDefinitions>
