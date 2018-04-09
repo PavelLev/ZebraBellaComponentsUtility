@@ -10,10 +10,21 @@ namespace ZebraBellaComponentsUtility.Utility
             File.AppendAllLines(path, contents);
         }
 
+
+
         public void Delete(string path)
         {
             File.Delete(path);
         }
+
+
+
+        public bool Exists(string path)
+        {
+            return File.Exists(path);
+        }
+
+
 
         public IEnumerable<string> ReadLines(string path)
         {

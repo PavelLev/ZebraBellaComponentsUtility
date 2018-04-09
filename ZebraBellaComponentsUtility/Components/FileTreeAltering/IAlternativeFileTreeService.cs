@@ -1,4 +1,4 @@
-﻿namespace ZebraBellaComponentsUtility.Components
+﻿namespace ZebraBellaComponentsUtility.Components.FileTreeAltering
 {
     public interface IAlternativeFileTreeService
     {

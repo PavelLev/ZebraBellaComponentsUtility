@@ -8,7 +8,9 @@ namespace ZebraBellaComponentsUtility.Utility
         string GetExecutableFileName();
         string GetStorageDirectoryPath(string componentName);
         string GetLogsDirectoryPath(string componentName);
+
         IEnumerable<string> EnumerateComponents();
+        bool ComponentExists(string componentName);
 
         string GetComponentDirectory(string componentName);
         string GetAlternativeFileTreeDirectoryPath();

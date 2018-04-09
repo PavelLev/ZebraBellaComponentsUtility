@@ -41,31 +41,73 @@
     <Reference Include="CommonServiceLocator, Version=2.0.1.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\CommonServiceLocator.2.0.1\lib\net45\CommonServiceLocator.dll</HintPath>
     </Reference>
+    <Reference Include="DryIoc, Version=3.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DryIoc.dll.3.0.0-preview-11\lib\net45\DryIoc.dll</HintPath>
+    </Reference>
     <Reference Include="Hardcodet.Wpf.TaskbarNotification, Version=1.0.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Hardcodet.NotifyIcon.Wpf.1.0.8\lib\net451\Hardcodet.Wpf.TaskbarNotification.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Configuration.2.1.0-preview1-final\lib\netstandard2.0\Microsoft.Extensions.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration.Abstractions, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Configuration.Abstractions.2.1.0-preview1-final\lib\netstandard2.0\Microsoft.Extensions.Configuration.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration.Binder, Version=2.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Configuration.Binder.2.0.1\lib\netstandard2.0\Microsoft.Extensions.Configuration.Binder.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration.FileExtensions, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Configuration.FileExtensions.2.1.0-preview1-final\lib\netstandard2.0\Microsoft.Extensions.Configuration.FileExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Configuration.Json, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Configuration.Json.2.1.0-preview1-final\lib\netstandard2.0\Microsoft.Extensions.Configuration.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.2.0.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.FileProviders.Abstractions, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.FileProviders.Abstractions.2.1.0-preview1-final\lib\netstandard2.0\Microsoft.Extensions.FileProviders.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.FileProviders.Physical, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.FileProviders.Physical.2.1.0-preview1-final\lib\netstandard2.0\Microsoft.Extensions.FileProviders.Physical.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.FileSystemGlobbing, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.FileSystemGlobbing.2.1.0-preview1-final\lib\netstandard2.0\Microsoft.Extensions.FileSystemGlobbing.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Options, Version=2.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Options.2.0.1\lib\netstandard2.0\Microsoft.Extensions.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Options.ConfigurationExtensions, Version=2.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Options.ConfigurationExtensions.2.0.1\lib\netstandard2.0\Microsoft.Extensions.Options.ConfigurationExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Primitives, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Primitives.2.1.0-preview1-final\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
     </Reference>
     <Reference Include="NCode.ReparsePoints, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\NCode.ReparsePoints.1.0.2\lib\net451\NCode.ReparsePoints.dll</HintPath>
     </Reference>
-    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Prism, Version=7.0.0.269, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
-      <HintPath>..\packages\Prism.Core.7.0.0.269-pre\lib\net45\Prism.dll</HintPath>
+    <Reference Include="Prism, Version=7.0.0.336, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Core.7.0.0.336-pre\lib\net45\Prism.dll</HintPath>
     </Reference>
-    <Reference Include="Prism.Wpf, Version=7.0.0.269, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
-      <HintPath>..\packages\Prism.Wpf.7.0.0.269-pre\lib\net45\Prism.Wpf.dll</HintPath>
+    <Reference Include="Prism.Wpf, Version=7.0.0.336, Culture=neutral, PublicKeyToken=40ee6c3a2184dc59, processorArchitecture=MSIL">
+      <HintPath>..\packages\Prism.Wpf.7.0.0.336-pre\lib\net45\Prism.Wpf.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Management" />
-    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.0-preview1-26216-02\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0-preview1-26216-02\lib\net461\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Prism.Wpf.7.0.0.269-pre\lib\net45\System.Windows.Interactivity.dll</HintPath>
+      <HintPath>..\packages\Prism.Wpf.7.0.0.336-pre\lib\net45\System.Windows.Interactivity.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml" />
@@ -91,48 +133,65 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Components\Alarms\UnexpectedStopAlarmService.cs" />
-    <Compile Include="Components\AlternativeFileTreeService.cs" />
+    <Compile Include="Components\FileTreeAltering\AlternativeFileTreeService.cs" />
     <Compile Include="Components\ComponentsService.cs" />
     <Compile Include="Components\Alarms\IUnexpectedStopAlarmService.cs" />
-    <Compile Include="Components\IAlternativeFileTreeService.cs" />
+    <Compile Include="Components\FileTreeAltering\IAlternativeFileTreeService.cs" />
     <Compile Include="Components\IComponentsService.cs" />
     <Compile Include="Components\Processes\IProcessShellFactory.cs" />
     <Compile Include="Components\Processes\ProcessShell.cs" />
     <Compile Include="Components\Processes\ProcessShellFactory.cs" />
-    <Compile Include="ConfigurationSections\UserData\ConfigurationElements\AlternativeFileTree.cs" />
-    <Compile Include="ConfigurationSections\UserData\ConfigurationElements\AlternativeFileTreeClasses\DirectoryJunction.cs" />
-    <Compile Include="ConfigurationSections\UserData\ConfigurationElements\AlternativeFileTreeClasses\DirectoryJunctionCollection.cs" />
-    <Compile Include="ConfigurationSections\UserData\ConfigurationElements\ApplicationRelativePaths.cs" />
-    <Compile Include="ConfigurationSections\UserData\ConfigurationElements\ComponentRelativePaths.cs" />
-    <Compile Include="ConfigurationSections\UserData\ConfigurationElements\Miscellaneous.cs" />
-    <Compile Include="ConfigurationSections\UserData\ConfigurationElements\RepositoryRelativePaths.cs" />
-    <Compile Include="ConfigurationSections\UserData\UserData.cs" />
-    <Compile Include="DryIoc\AsyncExecutionFlowScopeContext.cs" />
-    <Compile Include="DryIoc\Container.cs" />
-    <Compile Include="DryIoc\FastExpressionCompiler.cs" />
-    <Compile Include="DryIoc\ImTools.cs" />
+    <Compile Include="Components\Profiles\ComponentNameViewModel.cs" />
+    <Compile Include="Components\Profiles\IProfileService.cs" />
+    <Compile Include="Components\Profiles\Profile.cs" />
+    <Compile Include="Components\Profiles\ProfileEditingView.xaml.cs">
+      <DependentUpon>ProfileEditingView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Components\Profiles\ProfileEditingViewModel.cs" />
+    <Compile Include="Components\Profiles\ProfileManagementView.xaml.cs">
+      <DependentUpon>ProfileManagementView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Components\Profiles\ProfileManagementViewModel.cs" />
+    <Compile Include="Components\Profiles\ProfileService.cs" />
+    <Compile Include="Components\Profiles\ProfileViewModel.cs" />
+    <Compile Include="CompositionRoot.cs" />
+    <Compile Include="Components\FileTreeAltering\AlternativeFileTree.cs" />
+    <Compile Include="Components\FileTreeAltering\DirectoryJunction.cs" />
+    <Compile Include="Utility\Extensions\WpfEnumerableExtensions.cs" />
+    <Compile Include="Utility\IO\ApplicationRelativePathConfiguration.cs" />
+    <Compile Include="Utility\IO\ComponentRelativePathConfiguration.cs" />
+    <Compile Include="MiscellaneousConfiguration.cs" />
+    <Compile Include="Utility\IO\DomainRelativePathConfiguration.cs" />
     <Compile Include="TaskbarIconViewModel.cs" />
-    <Compile Include="Utility\ConfigurationRegex.cs" />
     <Compile Include="Utility\CustomMessageBoxes\CustomMessageBox.xaml.cs">
       <DependentUpon>CustomMessageBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utility\CustomMessageBoxes\CustomMessageBoxService.cs" />
-    <Compile Include="Utility\DirectoryService.cs" />
-    <Compile Include="Utility\FileService.cs" />
-    <Compile Include="Utility\IDirectoryService.cs" />
-    <Compile Include="Utility\IFileService.cs" />
+    <Compile Include="Utility\IO\DirectoryService.cs" />
+    <Compile Include="Utility\Extensions\JsonSerializerExtensions.cs" />
+    <Compile Include="Utility\Extensions\OptionsContainerExtensions.cs" />
+    <Compile Include="Utility\IO\FileService.cs" />
+    <Compile Include="Utility\IO\IDirectoryService.cs" />
+    <Compile Include="Utility\IO\IFileService.cs" />
     <Compile Include="Utility\CustomMessageBoxes\ICustomMessageBoxService.cs" />
-    <Compile Include="Utility\Ioc.cs" />
-    <Compile Include="Utility\IPathEqualityComparer.cs" />
-    <Compile Include="Utility\IPathService.cs" />
+    <Compile Include="Utility\IO\IPathEqualityComparer.cs" />
+    <Compile Include="Utility\IO\IPathService.cs" />
     <Compile Include="Utility\IWinApi.cs" />
-    <Compile Include="Utility\PathEqualityComparer.cs" />
-    <Compile Include="Utility\PathService.cs" />
+    <Compile Include="Utility\IO\PathEqualityComparer.cs" />
+    <Compile Include="Utility\IO\PathService.cs" />
     <Compile Include="Utility\WinApi.cs" />
     <Compile Include="Utility\WinApiTypes\KeyCode.cs" />
     <Compile Include="Utility\WinApiTypes\ProcessEntry.cs" />
     <Compile Include="Utility\WinApiTypes\SnapshotType.cs" />
     <Compile Include="Utility\WinApiTypes\WindowsMessageType.cs" />
+    <Page Include="Components\Profiles\ProfileEditingView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Components\Profiles\ProfileManagementView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="TaskbarIcon.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -161,9 +220,15 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <None Include="packages.config" />
+    <None Include="profiles.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <None Include="ZebraBellaComponentsUtility.Configuration.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Threading;
-using ZebraBellaComponentsUtility.ConfigurationSections.UserData.ConfigurationElements;
 using ZebraBellaComponentsUtility.Utility.CustomMessageBoxes;
 
 namespace ZebraBellaComponentsUtility.Components.Alarms
@@ -9,17 +7,17 @@ namespace ZebraBellaComponentsUtility.Components.Alarms
     public class UnexpectedStopAlarmService : IUnexpectedStopAlarmService
     {
         private readonly ICustomMessageBoxService _customMessageBoxService;
-        private readonly Miscellaneous _miscellaneous;
+        private readonly MiscellaneousConfiguration _miscellaneousConfiguration;
         private readonly List<string> _componentNamesToDisplay = new List<string>();
 
         private readonly Timer _timer;
 
         private readonly object _syncRoot = new object();
 
-        public UnexpectedStopAlarmService(ICustomMessageBoxService customMessageBoxService, Miscellaneous miscellaneous)
+        public UnexpectedStopAlarmService(ICustomMessageBoxService customMessageBoxService, MiscellaneousConfiguration miscellaneousConfiguration)
         {
             _customMessageBoxService = customMessageBoxService;
-            _miscellaneous = miscellaneous;
+            _miscellaneousConfiguration = miscellaneousConfiguration;
 
             _timer = new Timer(TimerCallback, null, Timeout.Infinite, Timeout.Infinite);
         }
@@ -30,7 +28,7 @@ namespace ZebraBellaComponentsUtility.Components.Alarms
             {
                 _componentNamesToDisplay.Add(componentName);
 
-                _timer.Change(_miscellaneous.AlarmDelay, Timeout.Infinite);
+                _timer.Change(_miscellaneousConfiguration.AlarmDelay, Timeout.Infinite);
             }
         }
 

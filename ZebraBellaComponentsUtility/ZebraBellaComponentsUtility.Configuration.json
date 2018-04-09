@@ -1,0 +1,38 @@
+﻿{
+    "AlternativeFileTree":
+    {
+        "DirectoryJunctions":
+        [
+            {
+                "Name": "model",
+                "RepositoryRelativePath": "./common/model/"
+            },
+            {
+                "Name": "logic",
+                "RepositoryRelativePath": "./components/{0}/{0}Src/"
+            }
+        ]
+    },
+    "ApplicationRelativePaths":
+    {
+        "DomainRoot": "../"
+    },
+    "ComponentRelativePaths":
+    {
+        "ExecutableDirectory": "./bella/",
+        "ExecutableFile": "belladomain.exe",
+        "StorageDirectory": "./bella/storage/",
+        "LogsDirectory": "./bella/logs/"
+    },
+    "DomainRelativePaths":
+    {
+        "ComponentsFolder": "./components/",
+        "AlternativeFileTreeFolder": "./AlternativeFileTree/"
+    },
+    "Miscellaneous":
+    {
+        "BellaCloseDelay": "1000",
+        "AlarmDelay": "500",
+        "ProfileConfigurationFilePath": "./profiles.json"
+    }
+}

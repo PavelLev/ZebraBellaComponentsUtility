@@ -1,6 +1,9 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
+using DryIoc;
 using Hardcodet.Wpf.TaskbarNotification;
-using ZebraBellaComponentsUtility.DryIoc;
+using ZebraBellaComponentsUtility.Components.Profiles;
 using ZebraBellaComponentsUtility.Utility;
 
 namespace ZebraBellaComponentsUtility
@@ -11,9 +14,19 @@ namespace ZebraBellaComponentsUtility
 
         private void App_OnStartup(object sender, StartupEventArgs e)
         {
-            Ioc.SetStaticResources(Resources);
+            var container = new Container();
+
+            container.UseInstance(Resources);
+
+            
+            container.Register<CompositionRoot>(Reuse.Singleton);
+
+            container.Resolve<CompositionRoot>();
+
+
             _taskbarIcon = (TaskbarIcon)FindResource("TaskbarIcon");
-            _taskbarIcon.DataContext = Ioc.Container.Resolve<TaskbarIconViewModel>();
+
+            _taskbarIcon.DataContext = container.Resolve<TaskbarIconViewModel>();
         }
 
 

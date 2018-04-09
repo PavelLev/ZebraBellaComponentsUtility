@@ -1,27 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using ZebraBellaComponentsUtility.ConfigurationSections.UserData.ConfigurationElements;
 
-namespace ZebraBellaComponentsUtility.Utility
+namespace ZebraBellaComponentsUtility.Utility.IO
 {
     public class PathService : IPathService
     {
-        private readonly ComponentRelativePaths _componentRelativePaths;
+        private readonly ComponentRelativePathConfiguration _componentRelativePaths;
         private readonly IDirectoryService _directoryService;
+        private readonly IFileService _fileService;
         private readonly string _componentsFolderPath;
         private readonly string _alternativeFileTreeDirectoryPath;
         private readonly string _gitIgnoreAlternativeFileTreeDirectoryPath;
         private readonly string _domainAbsolutePath;
         private readonly string _gitExcludePath;
 
-        public PathService(ComponentRelativePaths componentRelativePaths, ApplicationRelativePaths applicationRelativePaths, RepositoryRelativePaths repositoryRelativePaths, IDirectoryService directoryService)
+        public PathService
+            (
+            ComponentRelativePathConfiguration componentRelativePaths,
+            ApplicationRelativePathConfiguration applicationRelativePathConfiguration, 
+            DomainRelativePathConfiguration repositoryRelativePaths, 
+            IDirectoryService directoryService,
+            IFileService fileService
+            )
         {
             _componentRelativePaths = componentRelativePaths;
             _directoryService = directoryService;
+            _fileService = fileService;
 
-            _domainAbsolutePath = Normalize(applicationRelativePaths.DomainRoot);
+            _domainAbsolutePath = Normalize(applicationRelativePathConfiguration.DomainRoot);
 
             _componentsFolderPath = Normalize
                 (
@@ -51,8 +58,8 @@ namespace ZebraBellaComponentsUtility.Utility
         {
             var executableDirectoryPath = Normalize
                 (
-                    GetComponentDirectory(componentName),
-                    _componentRelativePaths.ExecutableDirectory
+                GetComponentDirectory(componentName),
+                _componentRelativePaths.ExecutableDirectory
                 );
 
             return executableDirectoryPath;
@@ -88,8 +95,27 @@ namespace ZebraBellaComponentsUtility.Utility
         public IEnumerable<string> EnumerateComponents()
         {
             return _directoryService.EnumerateDirectories(_componentsFolderPath)
-                .Select(GetDirectoryName);
+                .Select(GetDirectoryName)
+                .Where(ComponentExists);
         }
+
+
+
+        public bool ComponentExists(string componentName)
+        {
+            var componentExists = _fileService.Exists
+                (
+                Normalize
+                    (
+                    GetExecutableDirectoryPath(componentName),
+                    _componentRelativePaths.ExecutableFile
+                    )
+                );
+
+            return componentExists;
+        }
+
+
 
         public string GetComponentDirectory(string componentName)
         {

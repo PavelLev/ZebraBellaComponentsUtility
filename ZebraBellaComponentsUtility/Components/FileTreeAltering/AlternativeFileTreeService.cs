@@ -1,12 +1,9 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
-using System.Windows;
 using NCode.ReparsePoints;
-using ZebraBellaComponentsUtility.ConfigurationSections.UserData.ConfigurationElements;
 using ZebraBellaComponentsUtility.Utility;
 
-namespace ZebraBellaComponentsUtility.Components
+namespace ZebraBellaComponentsUtility.Components.FileTreeAltering
 {
     public class AlternativeFileTreeService : IAlternativeFileTreeService
     {
@@ -109,7 +106,7 @@ namespace ZebraBellaComponentsUtility.Components
             }
 
 
-            var requiredJunctions = _alternativeFileTree.DirectoryJunctions.Cast<DirectoryJunction>().ToList();
+            var requiredJunctions = _alternativeFileTree.DirectoryJunctions;
 
 
             var presentJunctions = _directoryService.EnumerateDirectories(component.AlternativeFileTreeDirectoryPath)

@@ -1,13 +1,36 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:ZebraBellaComponentsUtility"
-                    xmlns:tb="http://www.hardcodet.net/taskbar">
+                    xmlns:tb="http://www.hardcodet.net/taskbar"
+                    xmlns:profiles="clr-namespace:ZebraBellaComponentsUtility.Components.Profiles">
+    <Style 
+        x:Key="ProfileManagementButtons"
+        TargetType="{x:Type Button}" >
+        <Setter 
+            Property="Button.Visibility"
+            Value="Visible"
+        />
+        <Style.Triggers>
+            <DataTrigger
+                Binding="{Binding ComponentNames.Count}"
+                Value="0"
+            >
+                <Setter 
+                    Property="Button.Visibility" 
+                    Value="Collapsed"
+                />
+            </DataTrigger>
+        </Style.Triggers>
+    </Style>
+
     <tb:TaskbarIcon 
         x:Key="TaskbarIcon"
         IconSource="Assets/icon.ico"
     >
         <tb:TaskbarIcon.ContextMenu>
-            <ContextMenu>
+            <ContextMenu
+                x:Name="ContextMenu"
+            >
                 <MenuItem 
                     Header="Start"
                     Command="{Binding StartCommand}"
@@ -32,9 +55,14 @@
                 <!--<Separator />
                 <MenuItem 
                     Header="Create alternative file tree"
-                    Command="{Binding CreateAlternativeFileTree}"
+                    Command="{Binding CreateAlternativeFileTreeCommand}"
                 />-->
                 <Separator />
+                <MenuItem 
+                    Header="Manage profiles"
+                    Command="{Binding OpenProfileManagementCommand}"
+                />
+                    <Separator />
                 <MenuItem 
                     Header="Exit"
                     Command="{Binding ExitCommand}"

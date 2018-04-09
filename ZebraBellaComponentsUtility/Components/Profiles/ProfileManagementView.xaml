@@ -1,0 +1,87 @@
+﻿<Window x:Class="ZebraBellaComponentsUtility.Components.Profiles.ProfileManagementView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ZebraBellaComponentsUtility.Components.Profiles"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        mc:Ignorable="d"
+        Title="Profile management"
+        ResizeMode="NoResize"
+        SizeToContent="WidthAndHeight"
+        x:Name="ProfileManagementWindow">
+    <StackPanel
+        Margin="10">
+        <ItemsControl
+            ItemsSource="{Binding Profiles}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate 
+                    DataType="{x:Type local:ProfileViewModel}"
+                    >
+                    <Grid
+                        Width="400"
+                        Margin="0, 0, 0, 5"
+                        Height="20"
+                        >
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Clicked">
+                                <i:InvokeCommandAction Command="{Binding SetCurrentProfileCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition 
+                                Width="2*"
+                                />
+                            <ColumnDefinition
+                                Width="*"
+                                />
+                            <ColumnDefinition 
+                                Width="*"
+                                />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock 
+                            Text="{Binding Name}"
+                            />
+                        <Button 
+                            Grid.Column="1"
+                            Content="Update" 
+                            Command="{Binding DataContext.UpdateProfileCommand, ElementName=ProfileManagementWindow}"
+                            CommandParameter="{Binding}"
+                            />
+                        <Button 
+                            Grid.Column="2"
+                            Content="Remove" 
+                            Command="{Binding DataContext.RemoveProfileCommand, ElementName=ProfileManagementWindow}"
+                            CommandParameter="{Binding}"
+                            />
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+            <ItemsControl.Resources>
+                <Style
+                    TargetType="{x:Type Button}" >
+                    <Setter 
+                        Property="Button.Visibility"
+                        Value="Visible"
+                    />
+                    <Style.Triggers>
+                        <DataTrigger
+                            Binding="{Binding ComponentNames.Count}"
+                            Value="0"
+                        >
+                            <Setter 
+                                Property="Button.Visibility" 
+                                Value="Collapsed"
+                            />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ItemsControl.Resources>
+        </ItemsControl>
+        <Button
+            Content="Add new profile"
+            Command="{Binding AddProfileCommand}"
+            Height="20"
+            />
+    </StackPanel>
+</Window>

@@ -8,9 +8,8 @@ using System.Threading;
 using System.Windows.Forms;
 using ZebraBellaComponentsUtility.Components.Alarms;
 using ZebraBellaComponentsUtility.Components.Processes;
-using ZebraBellaComponentsUtility.ConfigurationSections.UserData.ConfigurationElements;
+using ZebraBellaComponentsUtility.Components.Profiles;
 using ZebraBellaComponentsUtility.Utility;
-using ZebraBellaComponentsUtility.Utility.CustomMessageBoxes;
 using ZebraBellaComponentsUtility.Utility.WinApiTypes;
 
 namespace ZebraBellaComponentsUtility.Components
@@ -20,10 +19,11 @@ namespace ZebraBellaComponentsUtility.Components
         private readonly IPathService _pathService;
         private readonly IWinApi _winApi;
         private readonly IProcessShellFactory _processShellFactory;
-        private readonly Miscellaneous _miscellaneous;
+        private readonly MiscellaneousConfiguration _miscellaneousConfiguration;
         private readonly IDirectoryService _directoryService;
         private readonly IFileService _fileService;
         private readonly IUnexpectedStopAlarmService _unexpectedStopAlarmService;
+        private readonly IProfileService _profileService;
         private readonly List<ProcessShell> _componentProcessShells = new List<ProcessShell>();
         private readonly ManualResetEvent _allProcessesExitedResetEvent = new ManualResetEvent(false);
 
@@ -34,19 +34,21 @@ namespace ZebraBellaComponentsUtility.Components
             IPathService pathService, 
             IWinApi winApi, 
             IProcessShellFactory processShellFactory, 
-            Miscellaneous miscellaneous, 
+            MiscellaneousConfiguration miscellaneousConfiguration, 
             IDirectoryService directoryService, 
             IFileService fileService,
-            IUnexpectedStopAlarmService unexpectedStopAlarmService
+            IUnexpectedStopAlarmService unexpectedStopAlarmService,
+            IProfileService profileService
         )
         {
             _pathService = pathService;
             _winApi = winApi;
             _processShellFactory = processShellFactory;
-            _miscellaneous = miscellaneous;
+            _miscellaneousConfiguration = miscellaneousConfiguration;
             _directoryService = directoryService;
             _fileService = fileService;
             _unexpectedStopAlarmService = unexpectedStopAlarmService;
+            _profileService = profileService;
         }
 
         public void Start()
@@ -55,9 +57,11 @@ namespace ZebraBellaComponentsUtility.Components
             {
                 _allProcessesExitedResetEvent.Reset();
 
-                var allComponents = _pathService.EnumerateComponents().ToArray();
+                var allComponents = _pathService.EnumerateComponents();
 
-                var componentsToCreate = allComponents
+                var filteredComponents = _profileService.FilterComponents(allComponents);
+
+                var componentsToCreate = filteredComponents
                     .Except(_componentProcessShells.Select(processShell => processShell.ComponentName))
                     .ToArray();
 
@@ -116,7 +120,7 @@ namespace ZebraBellaComponentsUtility.Components
                 }
             }
 
-            if (!_allProcessesExitedResetEvent.WaitOne(_miscellaneous.BellaCloseDelay))
+            if (!_allProcessesExitedResetEvent.WaitOne(_miscellaneousConfiguration.BellaCloseDelay))
             {
                 var result = MessageBox.Show(new Form(), "Do you want to kill processes anyway?", "BellaCloseDelay has been exceeded", MessageBoxButtons.YesNo);
 

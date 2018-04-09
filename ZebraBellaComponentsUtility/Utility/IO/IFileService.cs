@@ -6,6 +6,7 @@ namespace ZebraBellaComponentsUtility.Utility
     {
         void AppendAllLines(string path, IEnumerable<string> contents);
         void Delete(string path);
+        bool Exists(string path);
         IEnumerable<string> ReadLines(string path);
     }
 }

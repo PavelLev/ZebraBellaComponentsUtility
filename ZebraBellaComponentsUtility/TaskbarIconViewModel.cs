@@ -1,14 +1,31 @@
 ﻿using System;
-using System.Windows;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows.Forms;
 using Prism.Commands;
 using ZebraBellaComponentsUtility.Components;
+using ZebraBellaComponentsUtility.Components.FileTreeAltering;
+using ZebraBellaComponentsUtility.Components.Profiles;
+using ZebraBellaComponentsUtility.Utility.Extensions;
+using Application = System.Windows.Application;
 
 namespace ZebraBellaComponentsUtility
 {
     public class TaskbarIconViewModel
     {
-        public TaskbarIconViewModel(IComponentsService componentsService, IAlternativeFileTreeService alternativeFileTreeService)
+        private readonly ProfileManagementView _profileManagementView;
+
+
+
+        public TaskbarIconViewModel
+            (
+            IComponentsService componentsService, 
+            IAlternativeFileTreeService alternativeFileTreeService,
+            ProfileManagementView profileManagementView)
         {
+            _profileManagementView = profileManagementView;
+
             StartCommand = new DelegateCommand(componentsService.Start);
 
             RestartCommand = new DelegateCommand(componentsService.Restart);
@@ -19,7 +36,7 @@ namespace ZebraBellaComponentsUtility
 
             ClearLogsCommand = new DelegateCommand(componentsService.ClearLogs);
 
-            CreateAlternativeFileTree = new DelegateCommand(() =>
+            CreateAlternativeFileTreeCommand = new DelegateCommand(() =>
             {
                 try
                 {
@@ -29,6 +46,11 @@ namespace ZebraBellaComponentsUtility
                 {
                     System.Windows.Forms.MessageBox.Show(new System.Windows.Forms.Form(), exception.Message, "Error while creating alternative file tree directory");
                 }
+            });
+
+            OpenProfileManagementCommand = new DelegateCommand(() =>
+            {
+                profileManagementView.ShowDialog();
             });
 
             ExitCommand = new DelegateCommand(() =>
@@ -48,7 +70,9 @@ namespace ZebraBellaComponentsUtility
 
         public DelegateCommand ClearLogsCommand { get; }
 
-        public DelegateCommand CreateAlternativeFileTree { get; }
+        public DelegateCommand CreateAlternativeFileTreeCommand { get; }
+
+        public DelegateCommand OpenProfileManagementCommand { get; }
 
         public DelegateCommand ExitCommand { get; }
     }
