@@ -21,5 +21,13 @@ namespace ZebraBellaComponentsUtility
             get;
             set;
         }
+
+        public string[] PermanentStorageComponentNames
+        {
+            get;
+            set;
+        }
+
+        public string ComponentCommandLineArguments { get; set; } = "";
     }
 }

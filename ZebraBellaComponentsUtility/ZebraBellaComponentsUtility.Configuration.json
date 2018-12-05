@@ -33,6 +33,11 @@
     {
         "BellaCloseDelay": "1000",
         "AlarmDelay": "500",
-        "ProfileConfigurationFilePath": "./profiles.json"
+        "ProfileConfigurationFilePath": "./profiles.json",
+        "PermanentStorageComponentNames":
+        [
+            "PollingComponent"
+        ],
+        "ComponentCommandLineArguments": "-createDbScript" 
     }
 }

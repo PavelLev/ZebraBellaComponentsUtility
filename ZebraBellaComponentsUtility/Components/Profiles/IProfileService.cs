@@ -12,6 +12,11 @@ namespace ZebraBellaComponentsUtility.Components.Profiles
             get;
         }
 
+        Profile CurrentProfile
+        {
+            get;
+        }
+
         void AddProfile(string name, IEnumerable<string> componentNames);
 
         void UpdateProfile(string name, IEnumerable<string> componentNames);

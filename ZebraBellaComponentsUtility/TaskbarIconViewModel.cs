@@ -14,7 +14,10 @@ namespace ZebraBellaComponentsUtility
 {
     public class TaskbarIconViewModel
     {
-        private readonly ProfileManagementView _profileManagementView;
+        private bool _isProfileManagementViewOpen = false;
+
+        private readonly object _syncRoot = new object();
+        private ProfileManagementView _currentProfileManagementView;
 
 
 
@@ -22,10 +25,8 @@ namespace ZebraBellaComponentsUtility
             (
             IComponentsService componentsService, 
             IAlternativeFileTreeService alternativeFileTreeService,
-            ProfileManagementView profileManagementView)
+            Func<ProfileManagementView> profileManagementViewFunc)
         {
-            _profileManagementView = profileManagementView;
-
             StartCommand = new DelegateCommand(componentsService.Start);
 
             RestartCommand = new DelegateCommand(componentsService.Restart);
@@ -50,7 +51,20 @@ namespace ZebraBellaComponentsUtility
 
             OpenProfileManagementCommand = new DelegateCommand(() =>
             {
-                profileManagementView.ShowDialog();
+                
+                if (_currentProfileManagementView != null)
+                {
+                    _currentProfileManagementView.Activate();
+                }
+                else
+                {
+                    _currentProfileManagementView = profileManagementViewFunc();
+
+                    _currentProfileManagementView.ShowDialog();
+
+                    _currentProfileManagementView = null;
+                }
+
             });
 
             ExitCommand = new DelegateCommand(() =>

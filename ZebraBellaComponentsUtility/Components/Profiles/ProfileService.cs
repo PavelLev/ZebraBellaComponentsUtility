@@ -1,6 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using Newtonsoft.Json;
+using ZebraBellaComponentsUtility.Utility;
 using ZebraBellaComponentsUtility.Utility.Extensions;
 
 namespace ZebraBellaComponentsUtility.Components.Profiles
@@ -8,19 +11,23 @@ namespace ZebraBellaComponentsUtility.Components.Profiles
     public class ProfileService : IProfileService
     {
         private readonly JsonSerializer _jsonSerializer;
+        private readonly IFileService _fileService;
         private readonly string _profileConfigurationFilePath;
         private readonly List<Profile> _profiles;
         private Profile _currentProfile;
+        private readonly string _defaultProfileName = "Default";
 
 
 
         public ProfileService
             (
             JsonSerializer jsonSerializer,
-            MiscellaneousConfiguration miscellaneousConfiguration
+            MiscellaneousConfiguration miscellaneousConfiguration,
+            IFileService fileService
             )
         {
             _jsonSerializer = jsonSerializer;
+            _fileService = fileService;
             _profileConfigurationFilePath = miscellaneousConfiguration.ProfileConfigurationFilePath;
 
             _profiles = LoadProfiles();
@@ -69,7 +76,14 @@ namespace ZebraBellaComponentsUtility.Components.Profiles
         {
             var index = _profiles.FindIndex(profile => profile.Name == name);
 
-            _profiles[index] = new Profile(name, componentNames.ToArray());
+            var updatedProfile = new Profile(name, componentNames.ToArray());
+
+            if (_profiles[index] == CurrentProfile)
+            {
+                _currentProfile = updatedProfile;
+            }
+
+            _profiles[index] = updatedProfile;
 
 
             SaveProfiles();
@@ -95,23 +109,38 @@ namespace ZebraBellaComponentsUtility.Components.Profiles
             {
                 _currentProfile = newCurrentProfile;
             }
+
+
+            SaveProfiles();
         }
 
 
 
         private List<Profile> LoadProfiles()
         {
+            if (!_fileService.Exists(_profileConfigurationFilePath))
+            {
+                _fileService.WriteAllText(_profileConfigurationFilePath, $"{{\"Item1\":[],\"Item2\":\"{_defaultProfileName}\"}}");
+            }
+
+            var (deserializedProfiles, currentProfileName) = _jsonSerializer.DeserializeFromFile<(IEnumerable<Profile>, string)>
+                (
+                _profileConfigurationFilePath
+                );
+            
+
             var profiles = new[] {
-                new Profile("Default", new string[]{})
+                new Profile(_defaultProfileName, new string[]{})
                 }
                 .Concat
                     (
-                    _jsonSerializer.DeserializeFromFile<IEnumerable<Profile>>
-                        (
-                        _profileConfigurationFilePath
-                        )
+                    deserializedProfiles
                     )
                 .ToList();
+
+
+            _currentProfile = profiles.FirstOrDefault(profile => profile.Name == currentProfileName) ?? profiles.First();
+
 
             return profiles;
         }
@@ -120,7 +149,12 @@ namespace ZebraBellaComponentsUtility.Components.Profiles
 
         private void SaveProfiles()
         {
-            _jsonSerializer.SerializeToFile(_profileConfigurationFilePath, _profiles.Skip(1));
+            _jsonSerializer.SerializeToFile(_profileConfigurationFilePath, (_profiles.Skip(1), _currentProfile.Name));
         }
+
+
+
+        public Profile CurrentProfile =>
+            _currentProfile;
     }
 }

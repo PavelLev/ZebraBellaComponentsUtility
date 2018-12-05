@@ -15,14 +15,12 @@ namespace ZebraBellaComponentsUtility.Components.Profiles
 
         public ProfileViewModel
             (
-            IProfileService profileService,
             string name,
             IEnumerable<string> componentNames
             )
         {
             _name = name;
             _componentNames = componentNames.ToObservableCollection();
-            SetCurrentProfileCommand = new DelegateCommand(() => profileService.SetCurrentProfile(Name));
         }
 
         public string Name
@@ -39,11 +37,6 @@ namespace ZebraBellaComponentsUtility.Components.Profiles
                 _componentNames;
             set =>
                 SetProperty(ref _componentNames, value);
-        }
-
-        public DelegateCommand SetCurrentProfileCommand
-        {
-            get;
         }
     }
 }

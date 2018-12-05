@@ -5,10 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ZebraBellaComponentsUtility.Components.Profiles"
         xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:wpf="clr-namespace:ZebraBellaComponentsUtility.Utility.WPF"
         mc:Ignorable="d"
         Title="Profile management"
         ResizeMode="NoResize"
         SizeToContent="WidthAndHeight"
+        WindowStartupLocation="CenterScreen"
         x:Name="ProfileManagementWindow">
     <StackPanel
         Margin="10">
@@ -22,10 +24,16 @@
                         Width="400"
                         Margin="0, 0, 0, 5"
                         Height="20"
+                        Background="White"
                         >
                         <i:Interaction.Triggers>
-                            <i:EventTrigger EventName="Clicked">
-                                <i:InvokeCommandAction Command="{Binding SetCurrentProfileCommand}"/>
+                            <i:EventTrigger 
+                                EventName="MouseUp"
+                                >
+                                <i:InvokeCommandAction 
+                                    Command="{Binding DataContext.SetCurrentProfileCommand, ElementName=ProfileManagementWindow}"
+                                    CommandParameter="{Binding}"
+                                    />
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                         <Grid.ColumnDefinitions>
@@ -41,7 +49,32 @@
                         </Grid.ColumnDefinitions>
                         <TextBlock 
                             Text="{Binding Name}"
-                            />
+                            >
+                            <TextBlock.Style>
+                                <Style>
+                                    <Style.Triggers>
+                                        <DataTrigger 
+                                            Value="True">
+                                            <DataTrigger.Binding>
+                                                <MultiBinding>
+                                                    <MultiBinding.Converter>
+                                                        <wpf:EqualityConverter/>
+                                                    </MultiBinding.Converter>
+                                                    <Binding/>
+                                                    <Binding
+                                                        Path="DataContext.CurrentProfile"
+                                                        ElementName="ProfileManagementWindow"
+                                                        />
+                                                </MultiBinding>
+                                            </DataTrigger.Binding>
+                                            <DataTrigger.Setters>
+                                                <Setter Property="TextBlock.FontWeight" Value="Bold"/>
+                                            </DataTrigger.Setters>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
                         <Button 
                             Grid.Column="1"
                             Content="Update" 

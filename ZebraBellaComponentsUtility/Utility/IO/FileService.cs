@@ -30,5 +30,12 @@ namespace ZebraBellaComponentsUtility.Utility
         {
             return File.ReadLines(path);
         }
+
+
+
+        public void WriteAllText(string path, string contents)
+        {
+            File.WriteAllText(path, contents);
+        }
     }
 }

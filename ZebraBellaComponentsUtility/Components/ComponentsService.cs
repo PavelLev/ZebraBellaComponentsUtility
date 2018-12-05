@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -16,30 +15,32 @@ namespace ZebraBellaComponentsUtility.Components
 {
     public class ComponentsService : IComponentsService
     {
-        private readonly IPathService _pathService;
-        private readonly IWinApi _winApi;
-        private readonly IProcessShellFactory _processShellFactory;
-        private readonly MiscellaneousConfiguration _miscellaneousConfiguration;
+        private readonly ManualResetEvent _allProcessesExitedResetEvent = new ManualResetEvent(false);
+        private readonly List<ProcessShell> _componentProcessShells = new List<ProcessShell>();
         private readonly IDirectoryService _directoryService;
         private readonly IFileService _fileService;
-        private readonly IUnexpectedStopAlarmService _unexpectedStopAlarmService;
+        private readonly MiscellaneousConfiguration _miscellaneousConfiguration;
+        private readonly IPathService _pathService;
+        private readonly IProcessShellFactory _processShellFactory;
         private readonly IProfileService _profileService;
-        private readonly List<ProcessShell> _componentProcessShells = new List<ProcessShell>();
-        private readonly ManualResetEvent _allProcessesExitedResetEvent = new ManualResetEvent(false);
 
         private readonly object _syncRoot = new object();
+        private readonly IUnexpectedStopAlarmService _unexpectedStopAlarmService;
+        private readonly IWinApi _winApi;
+
+
 
         public ComponentsService
-        (
-            IPathService pathService, 
-            IWinApi winApi, 
-            IProcessShellFactory processShellFactory, 
-            MiscellaneousConfiguration miscellaneousConfiguration, 
-            IDirectoryService directoryService, 
+            (
+            IPathService pathService,
+            IWinApi winApi,
+            IProcessShellFactory processShellFactory,
+            MiscellaneousConfiguration miscellaneousConfiguration,
+            IDirectoryService directoryService,
             IFileService fileService,
             IUnexpectedStopAlarmService unexpectedStopAlarmService,
             IProfileService profileService
-        )
+            )
         {
             _pathService = pathService;
             _winApi = winApi;
@@ -51,17 +52,23 @@ namespace ZebraBellaComponentsUtility.Components
             _profileService = profileService;
         }
 
+
+
+        private IEnumerable<string> ComponentNames =>
+            _profileService.FilterComponents
+                (
+                _pathService.EnumerateComponents()
+                );
+
+
+
         public void Start()
         {
             lock (_syncRoot)
             {
                 _allProcessesExitedResetEvent.Reset();
 
-                var allComponents = _pathService.EnumerateComponents();
-
-                var filteredComponents = _profileService.FilterComponents(allComponents);
-
-                var componentsToCreate = filteredComponents
+                var componentsToCreate = ComponentNames
                     .Except(_componentProcessShells.Select(processShell => processShell.ComponentName))
                     .ToArray();
 
@@ -71,11 +78,13 @@ namespace ZebraBellaComponentsUtility.Components
                         var componentProcessShell = _processShellFactory.Create(componentName);
 
                         componentProcessShell.Process.EnableRaisingEvents = true;
+
                         componentProcessShell.Process.Exited += (sender, args) =>
                         {
                             lock (_syncRoot)
                             {
-                                if (componentProcessShell.Process.ExitCode != 0 && !componentProcessShell.ShouldDie)
+                                if (componentProcessShell.Process.ExitCode != 0 &&
+                                    !componentProcessShell.ShouldDie)
                                 {
                                     _unexpectedStopAlarmService.Alarm(componentProcessShell.ComponentName);
                                 }
@@ -96,12 +105,16 @@ namespace ZebraBellaComponentsUtility.Components
             }
         }
 
+
+
         public void Restart()
         {
             Stop();
 
             Start();
         }
+
+
 
         public void Stop()
         {
@@ -114,9 +127,9 @@ namespace ZebraBellaComponentsUtility.Components
 
                 foreach (var processShell in _componentProcessShells.ToArray())
                 {
-                    _winApi.PostMessage(processShell.Process.MainWindowHandle, WindowsMessageType.KeyDown, (int)KeyCode.DownArrow, 0);
+                    _winApi.PostMessage(processShell.Process.MainWindowHandle, WindowsMessageType.KeyDown, (int) KeyCode.DownArrow, 0);
 
-                    _winApi.PostMessage(processShell.Process.MainWindowHandle, WindowsMessageType.KeyDown, (int)KeyCode.Enter, 0);
+                    _winApi.PostMessage(processShell.Process.MainWindowHandle, WindowsMessageType.KeyDown, (int) KeyCode.Enter, 0);
                 }
             }
 
@@ -130,6 +143,29 @@ namespace ZebraBellaComponentsUtility.Components
                 }
             }
         }
+
+
+
+        public void ClearStorage()
+        {
+            Stop();
+
+            var storageDirectoryPaths = ComponentNames.Except(_miscellaneousConfiguration.PermanentStorageComponentNames)
+                .Select(_pathService.GetStorageDirectoryPath);
+
+            ClearDirectories(storageDirectoryPaths);
+        }
+
+
+
+        public void ClearLogs()
+        {
+            var storageDirectoryPaths = ComponentNames.Select(_pathService.GetLogsDirectoryPath);
+
+            ClearDirectories(storageDirectoryPaths, true);
+        }
+
+
 
         private void KillPowerShellProcesses()
         {
@@ -146,20 +182,23 @@ namespace ZebraBellaComponentsUtility.Components
             }
         }
 
+
+
         private IEnumerable<Process> FindProcessesWithChild()
         {
             var snapshotHandle = _winApi.CreateToolhelp32Snapshot(SnapshotType.AllProcesses, 0);
 
             var processEntry = new ProcessEntry
             {
-                StructureSize = (uint)Marshal.SizeOf<ProcessEntry>()
+                StructureSize = (uint) Marshal.SizeOf<ProcessEntry>()
             };
 
             _winApi.Process32First(snapshotHandle, ref processEntry);
 
             do
             {
-                if (processEntry.ExecutableFileName == "BellaDomain.exe" && _componentProcessShells.Any(process => process.Process.Id == processEntry.ParentProcessId))
+                if (processEntry.ExecutableFileName == "BellaDomain.exe" &&
+                    _componentProcessShells.Any(process => process.Process.Id == processEntry.ParentProcessId))
                 {
                     foreach (var componentProcessShell in _componentProcessShells)
                     {
@@ -172,25 +211,7 @@ namespace ZebraBellaComponentsUtility.Components
             } while (_winApi.Process32Next(snapshotHandle, ref processEntry));
         }
 
-        public void ClearStorage()
-        {
-            Stop();
 
-            var componentNames = _pathService.EnumerateComponents();
-
-            var storageDirectoryPaths = componentNames.Select(_pathService.GetStorageDirectoryPath);
-
-            ClearDirectories(storageDirectoryPaths);
-        }
-
-        public void ClearLogs()
-        {
-            var componentNames = _pathService.EnumerateComponents();
-
-            var storageDirectoryPaths = componentNames.Select(_pathService.GetLogsDirectoryPath);
-
-            ClearDirectories(storageDirectoryPaths, true);
-        }
 
         private void ClearDirectories(IEnumerable<string> directoryPaths, bool ignoreDeletionFail = false)
         {

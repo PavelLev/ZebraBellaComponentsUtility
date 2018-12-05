@@ -8,5 +8,6 @@ namespace ZebraBellaComponentsUtility.Utility
         void Delete(string path);
         bool Exists(string path);
         IEnumerable<string> ReadLines(string path);
+        void WriteAllText(string path, string contents);
     }
 }

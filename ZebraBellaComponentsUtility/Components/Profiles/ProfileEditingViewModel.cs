@@ -17,6 +17,7 @@ namespace ZebraBellaComponentsUtility.Components.Profiles
 
         public ProfileEditingViewModel
             (
+            IProfileService profileService,
             IPathService pathService,
             Func<string, IEnumerable<string>, ProfileViewModel> profileViewModelFunc,
             ProfileViewModel originalProfileViewModel,
@@ -24,6 +25,8 @@ namespace ZebraBellaComponentsUtility.Components.Profiles
             )
         {
             IsCreation = string.IsNullOrEmpty(originalProfileViewModel.Name);
+
+            Name = originalProfileViewModel.Name;
 
             ComponentNameViewModels = pathService.EnumerateComponents()
                 .Select
@@ -55,10 +58,17 @@ namespace ZebraBellaComponentsUtility.Components.Profiles
                     )
                     .ToArray();
 
-                if (string.IsNullOrEmpty(Name) ||
-                    !selectedComponentNames.Any())
+                if (string.IsNullOrEmpty(Name))
                 {
-                    MessageBox.Show("profile is invalid");
+                    MessageBox.Show("You should specify name");
+                }
+                else if (IsCreation && profileService.Profiles.Any(profile => profile.Name == Name))
+                {
+                    MessageBox.Show("You should specify unique name");
+                }
+                else if (!selectedComponentNames.Any())
+                {
+                    MessageBox.Show("Select at least one component");
                 }
                 else
                 {
